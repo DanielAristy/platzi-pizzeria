@@ -2,6 +2,7 @@ package com.platzi_pizzeria.web.controller;
 
 import com.platzi_pizzeria.persistence.entity.PizzaEntity;
 import com.platzi_pizzeria.service.PizzaService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/pizzas")
+@Slf4j
 public class PizzaController {
 
     private final PizzaService pizzaService;
@@ -23,6 +25,8 @@ public class PizzaController {
 
     @GetMapping
     public ResponseEntity<List<PizzaEntity>> getAll() {
-        return ResponseEntity.ok(this.pizzaService.getAll());
+        List<PizzaEntity> pizzas = this.pizzaService.getAll();
+        log.info("PizzaController -> getAll {}", pizzas);
+        return ResponseEntity.ok(pizzas);
     }
 }
