@@ -1,10 +1,9 @@
 package com.platzi_pizzeria.service;
 
 import com.platzi_pizzeria.persistence.entity.PizzaEntity;
+import com.platzi_pizzeria.persistence.repository.PizzaRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,15 +12,20 @@ import java.util.List;
 @Slf4j
 public class PizzaService {
 
-    private final JdbcTemplate jdbcTemplate;
+    private final PizzaRepository pizzaRepository;
 
     @Autowired
-    public PizzaService(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public PizzaService(PizzaRepository pizzaRepository) {
+        this.pizzaRepository = pizzaRepository;
     }
+
 
     public List<PizzaEntity> getAll() {
         log.info("PizzaService -> getAll");
-        return jdbcTemplate.query("SELECT * FROM pizza", new BeanPropertyRowMapper<>(PizzaEntity.class));
+        return pizzaRepository.findAll();
+    }
+
+    public PizzaEntity getPizza(Integer id) {
+        return pizzaRepository.findById(id).orElse(null);
     }
 }
