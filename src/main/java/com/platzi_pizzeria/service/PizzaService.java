@@ -25,19 +25,27 @@ public class PizzaService {
         return pizzaRepository.findAll();
     }
 
+    public List<PizzaEntity> getAvailable() {
+        return this.pizzaRepository.findAllByAvailableTrueOrderByPrice();
+    }
+
     public PizzaEntity getPizza(int id) {
         return pizzaRepository.findById(id).orElse(null);
     }
 
-    public PizzaEntity save(PizzaEntity pizza){
+    public PizzaEntity getByName(String name) {
+        return pizzaRepository.findAllByAvailableTrueAndNameIgnoreCase(name);
+    }
+
+    public PizzaEntity save(PizzaEntity pizza) {
         return this.pizzaRepository.save(pizza);
     }
 
-    public Boolean exists(int idPizza){
+    public Boolean exists(int idPizza) {
         return this.pizzaRepository.existsById(idPizza);
     }
 
-    public void deleteById(int idPizza){
+    public void deleteById(int idPizza) {
         this.pizzaRepository.deleteById(idPizza);
     }
 }

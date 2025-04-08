@@ -28,10 +28,22 @@ public class PizzaController {
         return ResponseEntity.ok(pizzas);
     }
 
-    @GetMapping("{idPizza}")
+    @GetMapping("/{idPizza}")
     public ResponseEntity<PizzaEntity> get(@PathVariable int idPizza) {
         log.info("PizzaController -> get");
         return ResponseEntity.ok(this.pizzaService.getPizza(idPizza));
+    }
+
+    @GetMapping("/name/{name}")
+    public ResponseEntity<PizzaEntity> getByName(@PathVariable String name) {
+        log.info("PizzaController -> getByName");
+        return ResponseEntity.ok(this.pizzaService.getByName(name));
+    }
+
+    @GetMapping("/available")
+    public ResponseEntity<List<PizzaEntity>> getAvailable() {
+        log.info("PizzaController -> getAvailable");
+        return ResponseEntity.ok(this.pizzaService.getAvailable());
     }
 
     @PostMapping
