@@ -35,7 +35,7 @@ public class PizzaService {
     }
 
     public PizzaEntity getByName(String name) {
-        return pizzaRepository.findAllByAvailableTrueAndNameIgnoreCase(name);
+        return pizzaRepository.findFirstByAvailableTrueAndNameIgnoreCase(name);
     }
 
     public List<PizzaEntity> getWith(String ingredient) {
@@ -44,6 +44,10 @@ public class PizzaService {
 
     public List<PizzaEntity> getWithout(String ingredients) {
         return pizzaRepository.findAllByAvailableTrueAndDescriptionNotContainingIgnoreCase(ingredients);
+    }
+
+    public List<PizzaEntity> getCheapest(double price) {
+        return pizzaRepository.findTop3ByAvailableTrueAndPriceIsLessThanEqualOrderByPriceAsc(price);
     }
 
     public PizzaEntity save(PizzaEntity pizza) {

@@ -86,4 +86,11 @@ public class PizzaController {
 
         return ResponseEntity.badRequest().build();
     }
+
+    @GetMapping("/price/{price}")
+    public ResponseEntity<List<PizzaEntity>> getCheapest(@PathVariable double price) {
+        log.info("PizzaController -> getCheapest");
+        return ResponseEntity.ok(this.pizzaService.getCheapest(price));
+    }
+
 }
