@@ -22,6 +22,7 @@ public class PizzaService {
 
     public List<PizzaEntity> getAll() {
         log.info("PizzaService -> getAll");
+        log.info("PizzaService countByVeganTrue  {} ", pizzaRepository.countByVeganTrue());
         return pizzaRepository.findAll();
     }
 
