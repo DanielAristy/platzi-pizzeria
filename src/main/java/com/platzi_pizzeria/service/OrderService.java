@@ -27,11 +27,15 @@ public class OrderService {
 
     public List<OrderEntity> getTodayOrders() {
         LocalDateTime dateAfter = LocalDate.now().atTime(0, 0);
-        return orderRepository.findAllByDateAfter(dateAfter);
+        return this.orderRepository.findAllByDateAfter(dateAfter);
     }
 
     public List<OrderEntity> getOutSideOrders() {
         List<String> methods = List.of(DELIVERY, CARRYOUT);
-        return orderRepository.findAllByMethodIn(methods);
+        return this.orderRepository.findAllByMethodIn(methods);
+    }
+
+    public List<OrderEntity> getCustomerOrders(String customerId) {
+        return this.orderRepository.findCustomerOrder(customerId);
     }
 }
