@@ -4,6 +4,7 @@ import com.platzi_pizzeria.persistence.entity.PizzaEntity;
 import com.platzi_pizzeria.service.PizzaService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,10 +23,10 @@ public class PizzaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PizzaEntity>> getAll() {
-        List<PizzaEntity> pizzas = this.pizzaService.getAll();
+    public ResponseEntity<Page<PizzaEntity>> getAll(@RequestParam(defaultValue = "0") int page,
+                                                    @RequestParam(defaultValue = "8") int size) {
         log.info("PizzaController -> getAll");
-        return ResponseEntity.ok(pizzas);
+        return ResponseEntity.ok(this.pizzaService.getAll(page, size));
     }
 
     @GetMapping("/{idPizza}")
@@ -41,9 +42,13 @@ public class PizzaController {
     }
 
     @GetMapping("/available")
-    public ResponseEntity<List<PizzaEntity>> getAvailable() {
+    public ResponseEntity<Page<PizzaEntity>> getAvailable(@RequestParam(defaultValue = "0") int page,
+                                                          @RequestParam(defaultValue = "8") int size,
+                                                          @RequestParam(defaultValue = "price") String sortBy,
+                                                          @RequestParam(defaultValue = "ASC") String sortDirection
+    ) {
         log.info("PizzaController -> getAvailable");
-        return ResponseEntity.ok(this.pizzaService.getAvailable());
+        return ResponseEntity.ok(this.pizzaService.getAvailable(page, size, sortBy, sortDirection));
     }
 
     @GetMapping("/with/{ingredient}")
