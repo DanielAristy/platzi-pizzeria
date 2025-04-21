@@ -1,6 +1,7 @@
 package com.platzi_pizzeria.web.controller;
 
 import com.platzi_pizzeria.persistence.entity.OrderEntity;
+import com.platzi_pizzeria.persistence.projection.OrderSummary;
 import com.platzi_pizzeria.service.OrderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,6 +40,11 @@ public class OrderController {
     @GetMapping("/customer/{id}")
     public ResponseEntity<List<OrderEntity>> getCustomerOrders(@PathVariable String id) {
         return ResponseEntity.ok(this.orderService.getCustomerOrders(id));
+    }
+
+    @GetMapping("/summary/{id}")
+    public ResponseEntity<OrderSummary> getSummary(@PathVariable int id) {
+        return ResponseEntity.ok(this.orderService.getSummary(id));
     }
 }
 
