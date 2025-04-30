@@ -22,8 +22,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.GET, "/api/pizzas/**").hasAnyRole("ADMIN", "CUSTOMER")
                         .requestMatchers(HttpMethod.POST, "/api/pizzas/**").hasAnyRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/pizzas/**").hasAnyRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT).hasAnyRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/pizzas/**").hasAnyRole("ADMIN")
+                        .requestMatchers("/api/orders/random").hasAuthority("random_order")
+                        .requestMatchers("/api/orders/**").hasAnyRole("ADMIN")
+
                         .anyRequest()
                         .authenticated()
                 )
