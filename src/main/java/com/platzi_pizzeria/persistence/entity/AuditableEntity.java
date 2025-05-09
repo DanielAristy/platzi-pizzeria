@@ -3,7 +3,9 @@ package com.platzi_pizzeria.persistence.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
@@ -19,4 +21,12 @@ public class AuditableEntity {
     @LastModifiedDate
     @JsonIgnore
     private LocalDateTime modifiedDate;
+
+    @Column(name = "created_by")
+    @CreatedBy
+    private String createdBy;
+
+    @Column(name = "modified_by")
+    @LastModifiedBy
+    private String modifiedBy;
 }
