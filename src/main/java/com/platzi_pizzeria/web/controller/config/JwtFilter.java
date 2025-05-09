@@ -1,13 +1,15 @@
 package com.platzi_pizzeria.web.controller.config;
 
-import com.platzi_pizzeria.service.UserSecurityService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -17,11 +19,11 @@ import java.io.IOException;
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JWTUtil jwtUtil;
-    private final UserSecurityService userSecurityService;
+    private final UserDetailsService userDetailsService;
 
-    public JwtFilter(JWTUtil jwtUtil, UserSecurityService userSecurityService) {
+    public JwtFilter(JWTUtil jwtUtil, UserDetailsService userDetailsService) {
         this.jwtUtil = jwtUtil;
-        this.userSecurityService = userSecurityService;
+        this.userDetailsService = userDetailsService;
     }
 
 
@@ -29,34 +31,34 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        // 1. Validar que sea un header de autorización valido
-        String token = request.getHeader("Authorization");
+        // 1. Validar que sea un Header Authorization valido
+        String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        if (token != null || token.isEmpty() || token.startsWith("Bearer")) {
+        if (authHeader == null || authHeader.isEmpty() || !authHeader.startsWith("Bearer")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // 2. Validar el token
-        String jwt = token.split(" ")[1].trim();
+        // 2. Validar que el JWT sea valido
+        String jwt = authHeader.split(" ")[1].trim();
 
         if (!this.jwtUtil.isValid(jwt)) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // 3. Obtener el usuario
+        // 3. Cargar el usuario del UserDetailsService
         String username = this.jwtUtil.getUsername(jwt);
-        User user = (User) this.userSecurityService.loadUserByUsername(username);
+        User user = (User) this.userDetailsService.loadUserByUsername(username);
 
-        // 4. Cargar el usuario en el contexto de seguridad
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                user.getUsername(),
-                user.getPassword(),
-                user.getAuthorities()
+        // 4. Cargar al usuario en el contexto de seguridad.
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                user.getUsername(), user.getPassword(), user.getAuthorities()
         );
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        System.out.println(authenticationToken);
         filterChain.doFilter(request, response);
 
     }
